@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from "express";
+import "express-async-errors";
 import dotevnv from "dotenv";
 import { dbInit } from "./config/initDB";
 import { authRoutes } from "./routes/auth.route"; 
