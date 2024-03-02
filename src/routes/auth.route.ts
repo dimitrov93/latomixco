@@ -1,12 +1,10 @@
 import express from "express";
 import { validateRequest } from "../middlewares/validate-request";
-import { BadRequestError } from "../errors/bad-request-error";
 import * as authService from "../services/authService";
-import { registerUserValidation } from "../utils/authHelper";
+import { registerUserValidation, loginValidation } from "../utils/authHelper";
 const router = express.Router();
 
 import { Request, Response } from "express";
-import { User } from "../models/User";
 
 router.post(
   "/register",
@@ -21,11 +19,16 @@ router.post(
   }
 );
 
-router.post("/login", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+router.post(
+  "/login",
+  loginValidation,
+  validateRequest,
+  async (req: Request, res: Response) => {
+    const { email, password } = req.body;
 
-  const user = await authService.login(email, password);
-  res.status(200).send(user);
-});
+    const user = await authService.login(email, password);
+    res.status(200).send(user);
+  }
+);
 
 export { router as authRoutes };
