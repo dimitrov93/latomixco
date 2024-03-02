@@ -5,6 +5,8 @@ import { dbInit } from "./config/initDB";
 import { authRoutes } from "./routes/auth.route"; 
 import { errorHandler } from "./middlewares/error-handler";
 import { NotFoundError } from "./errors/not-found-error";
+import cookieSession from "cookie-session";
+
 dotevnv.config();
 
 const app: Express = express();
@@ -20,6 +22,10 @@ app.get("/", (req: Request, res: Response) => {
   res.send("hello world");
 });
 app.use(express.json());
+app.use(cookieSession({
+  signed: true,
+  keys: [process.env.SECTER_KEY_ONE!, process.env.SECTER_KEY_TWO!]
+}))
 
 app.use("/api/auth", authRoutes);
 

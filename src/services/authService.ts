@@ -6,6 +6,7 @@ interface userAttrs {
   username?: string;
   email: string;
   password: string;
+  id?: string
 }
 
 export const register = async (
