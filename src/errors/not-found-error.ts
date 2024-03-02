@@ -9,6 +9,6 @@ export class NotFoundError extends CustomError {
   }
 
   serializeErrors() {
-    return [{ message: "Not found" }];
+    return [{ message: "Path not found" }];
   }
 }
