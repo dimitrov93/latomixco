@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import "express-async-errors";
 import dotevnv from "dotenv";
 dotevnv.config();
@@ -9,20 +9,15 @@ import { errorHandler } from "./middlewares/error-handler";
 import { NotFoundError } from "./errors/not-found-error";
 import cookieSession from "cookie-session";
 import { rateLimiterMiddleware } from "./middlewares/rate-limiter";
+import { loggerMiddleware } from "./middlewares/logger-middleware";
 
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-app.use((req, res, next) => {
-  console.log(`METHOD: ${req.method} >> PATH: ${req.path}`);
-  next();
-});
-
 dbInit();
-app.get("/", (req: Request, res: Response) => {
-  res.send("hello world");
-});
+
+app.use(loggerMiddleware);
 app.use(express.json());
 app.use(
   cookieSession({
