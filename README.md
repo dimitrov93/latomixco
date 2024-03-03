@@ -184,3 +184,14 @@ This application utilizes the `express-async-errors` package to simplify error h
 ### cookie-session
 
 The application uses `cookie-sesson` middleware to manage user sessions securely and for access to req.session.
+
+### rate-limitter middleware
+
+Basic IP rate-limiter to prevent the application from DDoS attacks.
+
+Accepts an object where:
+  - windowMs: the time it will block requests, currently set up for 15 minutes (15 * 60 * 100).
+  - max: the number of requests that it will trigger, currently set at 10.
+  - message: custom message to show once the user is blocked out by exceeding the allowed number requests.
+
+
