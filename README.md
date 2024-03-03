@@ -23,7 +23,8 @@ This is a simple Express API for user management, including signup, login, logou
 Create a `.env` file in the root of your project with the following variables:
 
 - PORT
-- MONGO_URL
+- MONGO_USERNAME
+- MONGO_PASSWORD
 - SALT_ROUNDS
 - JWT_KEY
 - SECTER_KEY_ONE
