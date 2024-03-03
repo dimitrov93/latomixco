@@ -4,7 +4,7 @@ This is a simple Express API for user management, including signup, login, logou
 
 ## Features
 
-- **User Authentication:** Register, log in, and log out securely.
+- **User Authentication:** Register, log in, and log out securely with JWT.
 - **User Management:** CRUD operations for users.
 - **Password Change:** Allow currently logged in user to change their password only.
 - **Express Rate Limiting:** Prevent abuse with IP-based rate limiting.
@@ -15,10 +15,38 @@ This is a simple Express API for user management, including signup, login, logou
 - [ExpressJs](https://expressjs.com/en/starter/installing.html)
 - [MongoDB](https://www.mongodb.com/try/download/community)
 
+## Configuration
+
+### Environment Variables
+
+Create a `.env` file in the root of your project with the following variables:
+
+- PORT
+- MONGO_URL 
+- SALT_ROUNDS 
+- JWT_KEY 
+- SECTER_KEY_ONE 
+- SECTER_KEY_TWO 
+
 ## Installation
 
 npm install
 npm start
+
+## Usage
+
+### JWT Authentication
+
+- This API uses JSON Web Tokens (JWT) for user authentication. The tokens are generated during login and are required for accessing protected routes.
+
+### Rate Limiting
+
+- To prevent abuse, the API employs express rate limiting. Requests exceeding the defined rate limit will receive a 429 Too Many Requests response.
+
+### Error handling
+
+- Custom error handling provides consistent and informative error responses. Errors are categorized and include detailed messages for easier debugging.
+
 
 ## :information_source: API ROUTES
 
