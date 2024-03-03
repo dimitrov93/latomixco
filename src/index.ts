@@ -3,6 +3,7 @@ import "express-async-errors";
 import dotevnv from "dotenv";
 import { dbInit } from "./config/initDB";
 import { authRoutes } from "./routes/auth.route"; 
+import { userRoutes } from "./routes/user.route";
 import { errorHandler } from "./middlewares/error-handler";
 import { NotFoundError } from "./errors/not-found-error";
 import cookieSession from "cookie-session";
@@ -27,6 +28,7 @@ app.use(cookieSession({
   keys: [process.env.SECTER_KEY_ONE!, process.env.SECTER_KEY_TWO!]
 }))
 
+app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 
 app.all("*", async (req, res) => {

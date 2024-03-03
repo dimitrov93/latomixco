@@ -10,10 +10,9 @@ interface userAttrs {
 }
 
 export const register = async (
-  username: string,
-  email: string,
-  password: string
-): Promise<userAttrs | null> => {
+username: string,
+email: string,
+password: string): Promise<userAttrs | null> => {
   const existingUser = await User.findOne({ email });
 
   if (existingUser) throw new BadRequestError("User already registered!");
