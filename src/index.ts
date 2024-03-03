@@ -1,14 +1,15 @@
 import express, { Express, Request, Response } from "express";
 import "express-async-errors";
 import dotevnv from "dotenv";
+dotevnv.config();
 import { dbInit } from "./config/initDB";
-import { authRoutes } from "./routes/auth.route"; 
+import { authRoutes } from "./routes/auth.route";
 import { userRoutes } from "./routes/user.route";
 import { errorHandler } from "./middlewares/error-handler";
 import { NotFoundError } from "./errors/not-found-error";
 import cookieSession from "cookie-session";
+import { rateLimiterMiddleware } from "./middlewares/rate-limiter";
 
-dotevnv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -23,17 +24,20 @@ app.get("/", (req: Request, res: Response) => {
   res.send("hello world");
 });
 app.use(express.json());
-app.use(cookieSession({
-  signed: true,
-  keys: [process.env.SECTER_KEY_ONE!, process.env.SECTER_KEY_TWO!]
-}))
+app.use(
+  cookieSession({
+    signed: true,
+    keys: [process.env.SECTER_KEY_ONE!, process.env.SECTER_KEY_TWO!],
+  })
+);
 
+app.use(rateLimiterMiddleware)
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 
 app.all("*", async (req, res) => {
-    throw new NotFoundError();
-  });
+  throw new NotFoundError();
+});
 app.use(errorHandler);
 
 app.listen(port, () => {
