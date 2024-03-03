@@ -3,54 +3,57 @@ import { BadRequestError } from "../errors/bad-request-error";
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 
-export const getAllUsers = async (req: Request, res: Response) => {
-  const allUsers = await User.find();
-  res.status(200).json(allUsers);
+export const getAllUsers = async () => {
+  try {
+    const allUsers = await User.find();
+    return allUsers;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw new BadRequestError("Error fetching users from DB!");
+  }
 };
 
-export const getCurrentUser = async (req: Request, res: Response) => {
-  res.send({ currentUser: req.currentUser || null });
+export const getCurrentUserService = async (req: Request) => {
+  return { currentUser: req.currentUser || null };
 };
 
-export const editUserController = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
-
-  if (req.body.password)
+export const editUserService = async (userId: string, userData: any) => {
+  if (userData.password) {
     throw new BadRequestError("Password update not authorized!");
+  }
 
   const updatedUser = await User.updateOne(
     { _id: userId },
-    { $set: req.body },
+    { $set: userData },
     { new: true }
   );
 
   if (!updatedUser) {
-    res.status(404).json({ error: "User not found" });
+    throw new BadRequestError("User not found");
   }
 
-  res.status(200).json("User is updated");
+  return "User is updated";
 };
 
-export const changePasswordController = async (req: Request, res: Response) => {
-  const { currentPassword, newPassword } = req.body;
-
-  const loggedUserId = req.currentUser?.id;
-  const paramsId = req.params.userId;
-
-  if (loggedUserId !== paramsId)
-    throw new BadRequestError("Not authorized to change this password!");
-
+export const changePasswordService = async (
+  loggedUserId: string,
+  currentPassword: string,
+  newPassword: string
+) => {
   const existingUser = await User.findById(loggedUserId);
 
-  if (!existingUser)
+  if (!existingUser) {
     throw new BadRequestError("User with this id does not exist!");
+  }
 
   const isValid = await bcrypt.compare(
     currentPassword.trim(),
     existingUser.password
   );
 
-  if (!isValid) throw new BadRequestError("Password is incorrect!");
+  if (!isValid) {
+    throw new BadRequestError("Password is incorrect!");
+  }
 
   const saltRounds = parseInt(process.env.SALT_ROUNDS || "", 10) || 10;
   const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
@@ -61,5 +64,5 @@ export const changePasswordController = async (req: Request, res: Response) => {
     { new: true }
   );
 
-  res.status(201).json({ message: "Password is updated!" });
+  return "Password is updated!";
 };

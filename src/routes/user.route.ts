@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express";
+import express from "express";
 const router = express.Router();
 import { currentUser } from "../middlewares/current-user";
-import { editUserController, getCurrentUser, changePasswordController, getAllUsers } from "../services/user.service";
+import { getAllUsersController, getCurrentUserController, editUserController, changePasswordController } from "../controllers/user.controller";
 
-router.get("/", currentUser, getCurrentUser);
-router.get("/all", currentUser, getAllUsers);
+router.get("/", currentUser, getCurrentUserController);
+router.get("/all", currentUser, getAllUsersController);
 router.put("/:userId/edit", currentUser, editUserController);
 router.put("/:userId/password", currentUser, changePasswordController);
 

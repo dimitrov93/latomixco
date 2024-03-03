@@ -6,16 +6,19 @@ interface userAttrs {
   username?: string;
   email: string;
   password: string;
-  id?: string
+  id?: string;
 }
 
-export const register = async (
-username: string,
-email: string,
-password: string): Promise<userAttrs | null> => {
+export const registerUserService = async ({
+  username,
+  email,
+  password,
+}: userAttrs): Promise<userAttrs | null> => {
   const existingUser = await User.findOne({ email });
 
-  if (existingUser) throw new BadRequestError("User already registered!");
+  if (existingUser) {
+    throw new BadRequestError("User already registered!");
+  }
 
   const newUser = new User({
     username,
@@ -28,10 +31,15 @@ password: string): Promise<userAttrs | null> => {
   return savedUser;
 };
 
-export const login = async (
-  email: string,
-  password: string
-): Promise<userAttrs | null> => {
+interface LoginParams {
+  email: string;
+  password: string;
+}
+
+export const loginUserService = async ({
+  email,
+  password,
+}: LoginParams): Promise<userAttrs | null> => {
   const existingUser = await User.findOne({ email });
 
   if (!existingUser)

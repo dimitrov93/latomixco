@@ -1,12 +1,41 @@
-// import { BadRequestError } from "../errors/bad-request-error";
-// import { registerUser } from "../services/authService";
+import { Request, Response } from "express";
+import * as authService from "../services/auth.service";
+import jwtSign from "../utils/session";
 
+export const registerUserController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { username, email, password } = req.body;
 
-// export const register = async (req: Request, res: Response): Promise<void> => {
-//     const userData = req.body;
-//     const { username, email } = req.body;
-//     const user = await registerUser({ username, email });
+  const user = await authService.registerUserService({
+    username,
+    email,
+    password,
+  });
 
-//     const registeredUser = await registerUser(userData);
-//     res.status(201).json(registeredUser);
-// };
+  jwtSign(user, req);
+
+  res.status(201).json(user);
+};
+
+export const loginUserController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { email, password } = req.body;
+
+  const user = await authService.loginUserService({
+    email,
+    password,
+  });
+
+  jwtSign(user, req);
+
+  res.status(200).json(user);
+};
+
+export const logoutUserController = async (req: Request,res: Response): Promise<void> => {
+  req.session = null;
+  res.status(204).send({});
+};
